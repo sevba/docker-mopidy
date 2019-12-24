@@ -79,6 +79,9 @@ EXPOSE 1704
 
 ######################################
 ########### Supervisor setup #########
+
+# https://docs.docker.com/config/containers/multi-service_container/
+
 RUN apt-get install -y supervisor
 RUN mkdir -p /var/log/supervisor
 
