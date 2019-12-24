@@ -3,12 +3,16 @@ This is a fork of XXX that includes a snapserver inside the same container to mo
 # Features
   * Debian Jessy base image
   * Includes backend extensions for:
-      * [Mopidy-Spotify](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-spotify) for **[Spotify](https://www.spotify.com/us/)** (Premium)
-      * [Mopidy-GMusic](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-gmusic) for **[Google Play Music](https://play.google.com/music/listen)**
-      * [Mopidy-SoundClound](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-soundcloud) for **[SoundCloud](https://soundcloud.com/stream)**
-      * [Mopidy-Pandora](https://github.com/rectalogic/mopidy-pandora) for **[Pandora](https://www.pandora.com/)**
-      * [Mopidy-YouTube](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-youtube) for **[YouTube](https://www.youtube.com)**
-  * With [Mopidy-Moped](https://docs.mopidy.com/en/latest/ext/web/#mopidy-moped) web extension.
+    * [Mopidy-Spotify](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-spotify) for **[Spotify](https://www.spotify.com/us/)** (Premium)
+    * [Mopidy-GMusic](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-gmusic) for **[Google Play Music](https://play.google.com/music/listen)**
+    * [Mopidy-SoundClound](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-soundcloud) for **[SoundCloud](https://soundcloud.com/stream)**
+    * [Mopidy-Pandora](https://github.com/rectalogic/mopidy-pandora) for **[Pandora](https://www.pandora.com/)**
+    * [Mopidy-YouTube](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-youtube) for **[YouTube](https://www.youtube.com)**
+    * [Mopidy-Local]https://github.com/mopidy/mopidy-local) album art image serving
+  * Includes frontend extensions:
+    * [Iris](https://github.com/jaedb/Iris) web extension
+    * [Mopidy-Moped](https://mopidy.com/ext/moped/) web extension
+  
   * Can run as any user and runs as UID/GID `84044` user inside the container by default (for security reasons).
   * Includes [Snapcast](https://github.com/badaix/snapcast) server
 

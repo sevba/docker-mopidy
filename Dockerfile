@@ -1,11 +1,7 @@
 FROM debian:buster-slim
 
+# update pkg registry
 RUN apt-get update
-
-######################################
-########### Supervisor setup #########
-RUN apt-get install -y supervisor
-RUN mkdir -p /var/log/supervisor
 
 ######################################
 ########### Mopidy setup #############
@@ -40,13 +36,7 @@ RUN set -ex \
         pyopenssl \
         youtube-dl \
  && mkdir -p /var/lib/mopidy/.config \
- && ln -s /config /var/lib/mopidy/.config/mopidy \
-    # Clean-up
- && apt-get purge --auto-remove -y \
-        curl \
-        gcc \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache
+ && ln -s /config /var/lib/mopidy/.config/mopidy
 
  # Start helper script.
 COPY entrypoint.sh /entrypoint.sh
@@ -57,11 +47,6 @@ COPY mopidy.conf /config/mopidy.conf
 # Copy the pulse-client configuratrion.
 COPY pulse-client.conf /etc/pulse/client.conf
 
-# TODO: supervisor
-#COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-#COPY my_first_process my_first_process
-#COPY my_second_process my_second_process
-
 # Allows any user to run mopidy, but runs by default as a randomly generated UID/GID.
 ENV HOME=/var/lib/mopidy
 RUN set -ex \
@@ -69,30 +54,51 @@ RUN set -ex \
  && chown mopidy:audio -R $HOME /entrypoint.sh \
  && chmod go+rwx -R $HOME /entrypoint.sh
 
+# Expose MDP and Web ports
+EXPOSE 6600 6680 5555/udp
+
 ######################################
 ########### Snapcast setup ###########
-# Taken from: https://github.com/nolte/docker-snapcast/blob/master/DockerfileServerX86
-ARG SNAPCASTVERSION=0.11.1
+# Taken and adapted from: https://github.com/nolte/docker-snapcast/blob/master/DockerfileServerX86
+ARG SNAPCASTVERSION=0.17.1
+ARG SNAPCASTDEP_SUFFIX=-1
 
+# Download snapcast package
 RUN apt-get update && apt-get install wget -y
-RUN wget 'https://github.com/badaix/snapcast/releases/download/v'$SNAPCASTVERSION'/snapserver_'$SNAPCASTVERSION'_amd64.deb'
+RUN wget 'https://github.com/badaix/snapcast/releases/download/v'$SNAPCASTVERSION'/snapserver_'$SNAPCASTVERSION$SNAPCASTDEP_SUFFIX'_amd64.deb'
 
-RUN dpkg -i --force-all 'snapserver_'$SNAPCASTVERSION'_amd64.deb'
+# Install snapcast package
+RUN dpkg -i --force-all 'snapserver_'$SNAPCASTVERSION$SNAPCASTDEP_SUFFIX'_amd64.deb'
 RUN apt-get -f install -y
 
+# Create config directory
 RUN mkdir -p /root/.config/snapcast/
 
+# Expose TCP port used to stream audio data to snapclient instances
 EXPOSE 1704
 
+######################################
+########### Supervisor setup #########
+RUN apt-get install -y supervisor
+RUN mkdir -p /var/log/supervisor
+
+# Clean-up
+RUN apt-get purge --auto-remove -y curl gcc \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache
 
 # Runs as mopidy user by default.
 USER mopidy
 
+# Create volumes for
+#   - local: Metadata stored by Mopidy
+#   - media: Local media files
 VOLUME ["/var/lib/mopidy/local", "/var/lib/mopidy/media"]
 
-EXPOSE 6600 6680 5555/udp
-
+# dont know yet what this does
 ENTRYPOINT ["/usr/bin/dumb-init", "/entrypoint.sh"]
+
+# Copy launch script (will later be replaced with supervisord)
 COPY launch.sh launch.sh
 CMD ["./launch.sh"]
 
