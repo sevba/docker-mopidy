@@ -1,15 +1,8 @@
-[![](https://images.microbadger.com/badges/image/wernight/mopidy.svg)](http://microbadger.com/images/wernight/mopidy "Get your own image badge on microbadger.com")
+This is a fork of XXX that includes a snapserver inside the same container to more easily be able to create a multi-room media player system.
 
-What is Mopidy?
-===============
-
-[**Mopidy**](https://www.mopidy.com/) is a music server with support for [MPD clients](https://docs.mopidy.com/en/latest/clients/mpd/) and [HTTP clients](https://docs.mopidy.com/en/latest/ext/web/#ext-web).
-
-Features of this image
-----------------------
-
-  * Follows [official installation](https://docs.mopidy.com/en/latest/installation/debian/) on top of [Debian](https://registry.hub.docker.com/_/debian/).
-  * With backend extensions for:
+# Features
+  * Debian Jessy base image
+  * Includes backend extensions for:
       * [Mopidy-Spotify](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-spotify) for **[Spotify](https://www.spotify.com/us/)** (Premium)
       * [Mopidy-GMusic](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-gmusic) for **[Google Play Music](https://play.google.com/music/listen)**
       * [Mopidy-SoundClound](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-soundcloud) for **[SoundCloud](https://soundcloud.com/stream)**
@@ -17,73 +10,15 @@ Features of this image
       * [Mopidy-YouTube](https://docs.mopidy.com/en/latest/ext/backends/#mopidy-youtube) for **[YouTube](https://www.youtube.com)**
   * With [Mopidy-Moped](https://docs.mopidy.com/en/latest/ext/web/#mopidy-moped) web extension.
   * Can run as any user and runs as UID/GID `84044` user inside the container by default (for security reasons).
+  * Includes [Snapcast](https://github.com/badaix/snapcast) server
 
+TODO: how would one achieve this?
 You may install additional [backend extensions](https://docs.mopidy.com/en/latest/ext/backends/).
 
+# Usage
 
-Usage
------
-
-### Playing sound from the container
-
-There are various ways to have the audio from Mopidy running in your container
-to play on your system's audio output. Here are various ways, try them and find
-which one works for you.
-
-#### /dev/snd
-
-Simplest is by adding docker argument: `--device /dev/snd`. Try via:
-
-    $ docker run --rm \
-        --user root --device /dev/snd \
-        wernight/mopidy \
-        gst-launch-1.0 audiotestsrc ! audioresample ! autoaudiosink
-
-#### PulseAudio native
-
-Mount the current user's pulse directory to the pulseuadio user (UID `105`).
-Based on https://github.com/TheBiggerGuy/docker-pulseaudio-example.
-
-    $ docker run --rm \
-        --user $UID:$GID -v /run/user/$UID/pulse:/run/user/105/pulse \
-        wernight/mopidy \
-        gst-launch-1.0 audiotestsrc ! audioresample ! autoaudiosink
-
-#### PulseAudio over network
-
-First to make [audio work from within a Docker container](http://stackoverflow.com/q/28985714/167897),
-you should enable [PulseAudio over network](https://wiki.freedesktop.org/www/Software/PulseAudio/Documentation/User/Network/);
-so if you have X11 you may for example do:
-
- 1. Install [PulseAudio Preferences](http://freedesktop.org/software/pulseaudio/paprefs/). Debian/Ubuntu users can do this:
-
-        $ sudo apt-get install paprefs
-
- 2. Launch `paprefs` (PulseAudio Preferences) > "*Network Server*" tab > Check "*Enable network access to local sound devices*" (you may check "*Don't require authentication*" to avoid mounting cookie file described below).
-
- 3. Restart PulseAudio:
-
-        $ sudo service pulseaudio restart
-
-    or
-
-        $ pulseaudio -k
-        $ pulseaudio --start
-
-Note: On some distributions, it may be necessary to completely restart your computer. You can confirm that the settings have successfully been applied running `pax11publish | grep -Eo 'tcp:[^ ]*'`. You should see something like `tcp:myhostname:4713`.
-
-Now set the environment variables:
-
-  * `PULSE_SERVER` - PulseAudio server socket.
-  * `PULSE_COOKIE_DATA` - Hexadecimal encoded PulseAudio cookie commonly at `~/.config/pulse/cookie`.
-
-Example to check it works:
-
-    $ docker run --rm \
-        -e "PULSE_SERVER=tcp:$(hostname -i):4713" \
-        -e "PULSE_COOKIE_DATA=$(pax11publish -d | grep --color=never -Po '(?<=^Cookie: ).*')" \
-        wernight/mopidy \
-        gst-launch-1.0 audiotestsrc ! audioresample ! autoaudiosink
+## Playing sound from the container
+There are various ways to have the audio from Mopidy running in your container to play on your system's audio output. Have a look at [wernight/docker-mopidy](https://github.com/wernight/docker-mopidy#playing-sound-from-the-container) for a selection of options.
 
 ### General usage
 
