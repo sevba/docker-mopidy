@@ -32,8 +32,8 @@ RUN set -ex \
  && curl -L https://bootstrap.pypa.io/get-pip.py | python - 
 
 RUN set -ex \
- && pip install -U pip six pyasn1 requests[security] cryptography \
- && pip install -U --user \
+ && pip3 install -U pip six pyasn1 requests[security] cryptography \
+ && pip3 install -U \
         Mopidy-Local \
         Mopidy-Iris \
         Mopidy-Moped \
@@ -42,6 +42,7 @@ RUN set -ex \
         Mopidy-YouTube \
         pyopenssl \
         youtube-dl \
+ && echo "mopidy ALL=NOPASSWD: /usr/local/lib/python3.8/dist-packages/mopidy_iris/system.sh" >> /etc/sudoers \
  && mkdir -p /var/lib/mopidy/.config \
  && ln -s /config /var/lib/mopidy/.config/mopidy
 
