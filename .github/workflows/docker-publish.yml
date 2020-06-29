@@ -33,6 +33,17 @@ jobs:
           else
             docker build . --file Dockerfile
           fi
+          
+  buildAndPushDocker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag markusressel/mopidy:latest
+      - name: Login to DockerHub Registry
+        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      - name: Push the Docker image
+        run: docker push markusressel/mopidy:latest
 
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
