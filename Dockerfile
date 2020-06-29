@@ -25,9 +25,14 @@ RUN set -ex \
         mopidy \
         mopidy-soundcloud \
         mopidy-spotify \
- && curl -L https://bootstrap.pypa.io/get-pip.py | python - \
- && pip install -U six pyasn1 requests[security] cryptography \
- && pip install \
+ && curl -L https://bootstrap.pypa.io/get-pip.py | python - 
+
+
+USER mopidy
+RUN set -ex \
+ && pip install -U pip six pyasn1 requests[security] cryptography \
+ && pip install -U --user \
+        Mopidy-Local \
         Mopidy-Iris \
         Mopidy-Moped \
         Mopidy-GMusic \
@@ -60,7 +65,7 @@ EXPOSE 6600 6680 5555/udp
 ######################################
 ########### Snapcast setup ###########
 # Taken and adapted from: https://github.com/nolte/docker-snapcast/blob/master/DockerfileServerX86
-ARG SNAPCASTVERSION=0.17.1
+ARG SNAPCASTVERSION=0.20.0
 ARG SNAPCASTDEP_SUFFIX=-1
 
 # Download snapcast package
