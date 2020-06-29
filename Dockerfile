@@ -30,8 +30,6 @@ RUN set -ex \
         mopidy-spotify \
  && curl -L https://bootstrap.pypa.io/get-pip.py | python - 
 
-RUN adduser -D mopidy
-USER mopidy
 RUN set -ex \
  && pip install -U pip six pyasn1 requests[security] cryptography \
  && pip install -U --user \
