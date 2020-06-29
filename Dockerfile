@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster
+FROM python:3.7-slim-buster
 
 # update pkg registry
 RUN apt-get update
@@ -22,6 +22,7 @@ RUN set -ex \
         gstreamer1.0-plugins-bad \
         python-crypto \
         libavahi-common3 \
+        libavahi-client3 \
  && curl -L https://apt.mopidy.com/mopidy.gpg | apt-key add - \
  && curl -L https://apt.mopidy.com/mopidy.list -o /etc/apt/sources.list.d/mopidy.list \
  && apt-get update \
