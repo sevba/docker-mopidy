@@ -29,22 +29,23 @@ RUN set -ex \
         mopidy \
         mopidy-soundcloud \
         mopidy-spotify \
+        mopidy-gmusic \
+        mopidy-local \
  && curl -L https://bootstrap.pypa.io/get-pip.py | python - 
 
 RUN set -ex \
  && pip3 install -U pip six pyasn1 requests[security] cryptography \
  && pip3 install -U \
-        Mopidy-Local \
         Mopidy-Iris \
         Mopidy-Moped \
-        Mopidy-GMusic \
         Mopidy-Pandora \
         Mopidy-YouTube \
         pyopenssl \
         youtube-dl \
  && echo "mopidy ALL=NOPASSWD: /usr/local/lib/python3.8/dist-packages/mopidy_iris/system.sh" >> /etc/sudoers \
  && mkdir -p /var/lib/mopidy/.config \
- && ln -s /config /var/lib/mopidy/.config/mopidy
+ && ln -s /config /var/lib/mopidy/.config/mopidy \
+ && pip3 freeze
 
  # Start helper script.
 COPY entrypoint.sh /entrypoint.sh
