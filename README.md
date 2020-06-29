@@ -1,4 +1,6 @@
-This is a fork of XXX that includes a snapserver inside the same container to more easily be able to create a multi-room media player system.
+This is a fork of [wernight/docker-mopidy](https://github.com/wernight/docker-mopidy) that includes a snapserver inside the same container to more easily be able to create a multi-room media player system.
+
+# ORIGINAL README
 
 # Features
   * Debian Jessy base image
