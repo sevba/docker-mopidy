@@ -6,6 +6,9 @@ RUN apt-get update
 ######################################
 ########### Mopidy setup #############
 
+# add things to PATH
+ENV PATH="/root/.local/bin:${PATH}"
+ENV PATH="/var/lib/mopidy/.local/bin:${PATH}"
 RUN set -ex \
     # Official Mopidy install for Debian/Ubuntu along with some extensions
     # (see https://docs.mopidy.com/en/latest/installation/debian/ )
@@ -27,7 +30,7 @@ RUN set -ex \
         mopidy-spotify \
  && curl -L https://bootstrap.pypa.io/get-pip.py | python - 
 
-
+RUN adduser -D mopidy
 USER mopidy
 RUN set -ex \
  && pip install -U pip six pyasn1 requests[security] cryptography \
