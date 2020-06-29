@@ -42,7 +42,7 @@ RUN set -ex \
         Mopidy-YouTube \
         pyopenssl \
         youtube-dl \
- && echo "mopidy ALL=NOPASSWD: /usr/local/lib/python3.8/dist-packages/mopidy_iris/system.sh" >> /etc/sudoers \
+ && echo "mopidy ALL=NOPASSWD: /usr/local/lib/python3.8/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \
  && mkdir -p /var/lib/mopidy/.config \
  && ln -s /config /var/lib/mopidy/.config/mopidy \
  && pip3 freeze
