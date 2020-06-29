@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM python:3.8-slim-buster
 
 # update pkg registry
 RUN apt-get update
