@@ -36,6 +36,7 @@ RUN set -ex \
 
 RUN set -ex \
  apt install -y \
+    pkg-config \
     libcairo2-dev \
     libffi-dev \
     libgirepository1.0-dev \
