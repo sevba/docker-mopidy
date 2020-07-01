@@ -26,6 +26,8 @@ RUN set -ex \
         python-crypto \
         libavahi-common3 \
         libavahi-client3 \
+ && pip install -U \
+        pygobject \
  && curl -L https://apt.mopidy.com/mopidy.gpg | apt-key add - \
  && curl -L https://apt.mopidy.com/mopidy.list -o /etc/apt/sources.list.d/mopidy.list \
  && apt-get update \
@@ -58,8 +60,6 @@ USER mopidy
 
 RUN set -ex \
  && pip install -U pip six pyasn1 requests[security] cryptography \
- && pip install -U \
-        pygobject \
  && pip install -U \
         Mopidy-Iris \
         Mopidy-Moped \
