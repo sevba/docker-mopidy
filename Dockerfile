@@ -45,19 +45,19 @@ RUN set -ex \
     libglib2.0-dev \
     python3.7-dev \
  && pip install --ignore-installed --no-cache \
-       -U pygobject \
- && apt autoremove -y \
-    libcairo2-dev \
-    libffi-dev \
-    libgirepository1.0-dev \
-    libpango1.0-dev \
-    libglib2.0-dev \
-    libjpeg-dev \
-    libgif-dev
+       -U pygobject 
+ #&& apt autoremove -y \
+ #   libcairo2-dev \
+ #   libffi-dev \
+ #   libgirepository1.0-dev \
+ #   libpango1.0-dev \
+ #   libglib2.0-dev \
+ #   libjpeg-dev \
+ #   libgif-dev
 
-RUN set -ex \
- && apt install -y \
-    python-setuptools
+#RUN set -ex \
+# && apt install -y \
+#    python-setuptools
 
 # Start helper script.
 COPY entrypoint.sh /entrypoint.sh
