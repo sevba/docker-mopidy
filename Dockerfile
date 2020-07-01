@@ -2,11 +2,13 @@ FROM python:3.7-slim-buster
 
 # update pkg registry
 RUN apt update \
- && apt install curl \
+ && apt install -y \
+     gnupg \
+     curl \
+     wget \
  && curl -L https://apt.mopidy.com/mopidy.gpg | apt-key add - \
  && curl -L https://apt.mopidy.com/mopidy.list -o /etc/apt/sources.list.d/mopidy.list \
- && apt update \
- && apt install wget -y
+ && apt update
 
 ######################################
 ########### Mopidy setup #############
@@ -20,10 +22,8 @@ RUN set -ex \
  && DEBIAN_FRONTEND=noninteractive apt install -y \
         # pkg-config \
         # apt-utils \
-        curl \
         dumb-init \
         gcc \
-        gnupg \
         # python3-gi \
         # python3-gst-1.0 \
         gstreamer1.0-alsa \
