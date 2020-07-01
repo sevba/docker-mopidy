@@ -19,6 +19,7 @@ RUN set -ex \
         dumb-init \
         gcc \
         gnupg \
+        python3-gi \
         gstreamer1.0-alsa \
         gstreamer1.0-plugins-bad \
         python-crypto \
