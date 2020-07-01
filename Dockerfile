@@ -34,21 +34,7 @@ RUN set -ex \
         mopidy-local \
  && curl -L https://bootstrap.pypa.io/get-pip.py | python - 
 
-RUN set -ex \
- && pip3 install -U pip six pyasn1 requests[security] cryptography \
- && pip3 install -U \
-        Mopidy-Iris \
-        Mopidy-Moped \
-        Mopidy-Pandora \
-        Mopidy-YouTube \
-        pyopenssl \
-        youtube-dl \
- && echo "mopidy ALL=NOPASSWD: /usr/local/lib/python3.7/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \
- && mkdir -p /var/lib/mopidy/.config \
- && ln -s /config /var/lib/mopidy/.config/mopidy \
- && pip3 freeze
-
- # Start helper script.
+# Start helper script.
 COPY entrypoint.sh /entrypoint.sh
 
 # Default configuration.
@@ -63,6 +49,21 @@ RUN set -ex \
  && usermod -G audio,sudo mopidy \
  && chown mopidy:audio -R $HOME /entrypoint.sh \
  && chmod go+rwx -R $HOME /entrypoint.sh
+
+RUN set -ex \
+ && python3 -m pip install -U pip six pyasn1 requests[security] cryptography \
+ && python3 -m pip install -U \
+        Mopidy-Iris \
+        Mopidy-Moped \
+        Mopidy-Pandora \
+        Mopidy-YouTube \
+        pyopenssl \
+        youtube-dl \
+ && echo "mopidy ALL=NOPASSWD: /usr/local/lib/python3.7/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \
+ && mkdir -p /var/lib/mopidy/.config \
+ && ln -s /config /var/lib/mopidy/.config/mopidy \
+ && python3 -m pip freeze \
+ && pip3 freeze
 
 # Expose MDP and Web ports
 EXPOSE 6600 6680 5555/udp
