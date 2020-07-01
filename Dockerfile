@@ -26,18 +26,24 @@ RUN set -ex \
         python-crypto \
         libavahi-common3 \
         libavahi-client3 \
- && pip install -U \
-        pygobject \
  && curl -L https://apt.mopidy.com/mopidy.gpg | apt-key add - \
  && curl -L https://apt.mopidy.com/mopidy.list -o /etc/apt/sources.list.d/mopidy.list \
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         mopidy \
-        mopidy-soundcloud \
-        mopidy-spotify \
-        mopidy-gmusic \
-        mopidy-local \
  && curl -L https://bootstrap.pypa.io/get-pip.py | python - 
+
+
+RUN set -ex \
+ apt-get install -y \
+    libcairo2-dev \
+    libffi-dev \
+    libgirepository1.0-dev \
+    libglib2.0-dev \
+    python3.7-dev \
+ && pip install -U \
+        pygobject
+
 
 # Start helper script.
 COPY entrypoint.sh /entrypoint.sh
@@ -61,8 +67,12 @@ USER mopidy
 RUN set -ex \
  && pip install -U pip six pyasn1 requests[security] cryptography \
  && pip install -U \
+        Mopidy-Local \
         Mopidy-Iris \
         Mopidy-Moped \
+        Mopidy-GMusic \
+        Mopidy-Spotify \
+        Mopidy-SoundCloud \
         Mopidy-MPD \
         Mopidy-Pandora \
         Mopidy-YouTube \
