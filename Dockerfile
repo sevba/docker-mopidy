@@ -31,6 +31,7 @@ RUN set -ex \
  && apt update \
  && DEBIAN_FRONTEND=noninteractive apt install -y \
         mopidy \
+        mopidy-soundcloud \
         mopidy-spotify \
  && curl -L https://bootstrap.pypa.io/get-pip.py | python - 
 
@@ -87,7 +88,6 @@ RUN set -ex \
         Mopidy-Iris \
         Mopidy-Moped \
         Mopidy-GMusic \
-        Mopidy-SoundCloud \
         Mopidy-MPD \
         Mopidy-Pandora \
         Mopidy-YouTube \
