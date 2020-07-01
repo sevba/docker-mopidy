@@ -55,8 +55,8 @@ RUN set -ex \
 USER mopidy
 
 RUN set -ex \
- && python3 -m pip install -U pip six pyasn1 requests[security] cryptography \
- && python3 -m pip install -U \
+ && pip install -U pip six pyasn1 requests[security] cryptography \
+ && pip install -U \
         Mopidy-Iris \
         Mopidy-Moped \
         Mopidy-Pandora \
