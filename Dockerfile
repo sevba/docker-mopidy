@@ -1,7 +1,12 @@
 FROM python:3.7-slim-buster
 
 # update pkg registry
-RUN apt-get update
+RUN apt update \
+ && apt install curl \
+ && curl -L https://apt.mopidy.com/mopidy.gpg | apt-key add - \
+ && curl -L https://apt.mopidy.com/mopidy.list -o /etc/apt/sources.list.d/mopidy.list \
+ && apt update \
+ && apt install wget -y
 
 ######################################
 ########### Mopidy setup #############
@@ -13,22 +18,19 @@ RUN set -ex \
     # Official Mopidy install for Debian/Ubuntu along with some extensions
     # (see https://docs.mopidy.com/en/latest/installation/debian/ )
  && DEBIAN_FRONTEND=noninteractive apt install -y \
-        pkg-config \
-        apt-utils \
+        # pkg-config \
+        # apt-utils \
         curl \
         dumb-init \
         gcc \
         gnupg \
-        python3-gi \
-        python3-gst-1.0 \
+        # python3-gi \
+        # python3-gst-1.0 \
         gstreamer1.0-alsa \
         gstreamer1.0-plugins-bad \
         python-crypto \
         libavahi-common3 \
         libavahi-client3 \
- && curl -L https://apt.mopidy.com/mopidy.gpg | apt-key add - \
- && curl -L https://apt.mopidy.com/mopidy.list -o /etc/apt/sources.list.d/mopidy.list \
- && apt update \
  && DEBIAN_FRONTEND=noninteractive apt install -y \
         mopidy \
         mopidy-soundcloud \
@@ -112,7 +114,6 @@ ARG SNAPCASTVERSION=0.20.0
 ARG SNAPCASTDEP_SUFFIX=-1
 
 # Download snapcast package
-RUN apt update && apt install wget -y
 RUN wget 'https://github.com/badaix/snapcast/releases/download/v'$SNAPCASTVERSION'/snapserver_'$SNAPCASTVERSION$SNAPCASTDEP_SUFFIX'_amd64.deb'
 
 # Install snapcast package
@@ -130,8 +131,8 @@ EXPOSE 1704
 
 # https://docs.docker.com/config/containers/multi-service_container/
 
-RUN apt install -y supervisor
-RUN mkdir -p /var/log/supervisor
+RUN apt install -y supervisor \
+&& mkdir -p /var/log/supervisor
 
 # Clean-up
 RUN apt purge --auto-remove -y curl gcc \
