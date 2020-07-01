@@ -12,7 +12,6 @@ ENV PATH="/var/lib/mopidy/.local/bin:${PATH}"
 RUN set -ex \
     # Official Mopidy install for Debian/Ubuntu along with some extensions
     # (see https://docs.mopidy.com/en/latest/installation/debian/ )
- && apt update \
  && DEBIAN_FRONTEND=noninteractive apt install -y \
         pkg-config \
         apt-utils \
@@ -35,19 +34,25 @@ RUN set -ex \
  && curl -L https://bootstrap.pypa.io/get-pip.py | python - 
 
 RUN set -ex \
- apt install -y \
+ && apt install -y \
     libcairo2-dev \
+    libjpeg-dev \
+    libgif-dev \
     libffi-dev \
     libgirepository1.0-dev \
+    libpango1.0-dev \
     libglib2.0-dev \
     python3.7-dev \
- && pip install --ignore-installed --no-cache -U \
+ && pip install --ignore-installed --no-cache \
         pygobject \
- && apt autoremove \
+ && apt autoremove -y \
     libcairo2-dev \
     libffi-dev \
     libgirepository1.0-dev \
-    libglib2.0-dev
+    libpango1.0-dev \
+    libglib2.0-dev \
+    libjpeg-dev \
+    libgif-dev
 
 # Start helper script.
 COPY entrypoint.sh /entrypoint.sh
