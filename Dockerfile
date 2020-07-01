@@ -12,8 +12,8 @@ ENV PATH="/var/lib/mopidy/.local/bin:${PATH}"
 RUN set -ex \
     # Official Mopidy install for Debian/Ubuntu along with some extensions
     # (see https://docs.mopidy.com/en/latest/installation/debian/ )
- && apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+ && apt update \
+ && DEBIAN_FRONTEND=noninteractive apt install -y \
         apt-utils \
         curl \
         dumb-init \
@@ -28,22 +28,26 @@ RUN set -ex \
         libavahi-client3 \
  && curl -L https://apt.mopidy.com/mopidy.gpg | apt-key add - \
  && curl -L https://apt.mopidy.com/mopidy.list -o /etc/apt/sources.list.d/mopidy.list \
- && apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+ && apt update \
+ && DEBIAN_FRONTEND=noninteractive apt install -y \
         mopidy \
  && curl -L https://bootstrap.pypa.io/get-pip.py | python - 
 
 
 RUN set -ex \
- apt-get install -y \
+ apt install -y \
     libcairo2-dev \
     libffi-dev \
     libgirepository1.0-dev \
     libglib2.0-dev \
     python3.7-dev \
- && pip install -U \
-        pygobject
-
+ && pip install --ignore-installed --no-cache -U \
+        pygobject \
+ && apt autoremove \
+    libcairo2-dev \
+    libffi-dev \
+    libgirepository1.0-dev \
+    libglib2.0-dev
 
 # Start helper script.
 COPY entrypoint.sh /entrypoint.sh
@@ -97,12 +101,12 @@ ARG SNAPCASTVERSION=0.20.0
 ARG SNAPCASTDEP_SUFFIX=-1
 
 # Download snapcast package
-RUN apt-get update && apt-get install wget -y
+RUN apt update && apt install wget -y
 RUN wget 'https://github.com/badaix/snapcast/releases/download/v'$SNAPCASTVERSION'/snapserver_'$SNAPCASTVERSION$SNAPCASTDEP_SUFFIX'_amd64.deb'
 
 # Install snapcast package
 RUN dpkg -i --force-all 'snapserver_'$SNAPCASTVERSION$SNAPCASTDEP_SUFFIX'_amd64.deb'
-RUN apt-get -f install -y
+RUN apt -f install -y
 
 # Create config directory
 RUN mkdir -p /root/.config/snapcast/
@@ -115,12 +119,12 @@ EXPOSE 1704
 
 # https://docs.docker.com/config/containers/multi-service_container/
 
-RUN apt-get install -y supervisor
+RUN apt install -y supervisor
 RUN mkdir -p /var/log/supervisor
 
 # Clean-up
-RUN apt-get purge --auto-remove -y curl gcc \
- && apt-get clean \
+RUN apt purge --auto-remove -y curl gcc \
+ && apt clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache
 
 # Run as mopidy user by default.
