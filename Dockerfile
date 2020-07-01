@@ -22,6 +22,7 @@ RUN set -ex \
  && DEBIAN_FRONTEND=noninteractive apt install -y \
         # pkg-config \
         # apt-utils \
+        sudo \
         dumb-init \
         gcc \
         # python3-gi \
@@ -36,6 +37,11 @@ RUN set -ex \
         mopidy-soundcloud \
         mopidy-spotify \
  && curl -L https://bootstrap.pypa.io/get-pip.py | python - 
+
+RUN set -ex \
+ && echo "mopidy ALL = (ALL)  NOPASSWD: /var/lib/mopidy/.local/lib/python3.7/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \ 
+ && mkdir -p /var/lib/mopidy/.config \
+ && ln -s /config /var/lib/mopidy/.config/mopidy
 
 # RUN set -ex \
 #  && apt install -y \
@@ -99,11 +105,6 @@ RUN set -ex \
 # Switch back to root for installation
 USER root
 
-RUN set -ex \
- && echo "mopidy ALL = (ALL)  NOPASSWD: /var/lib/mopidy/.local/lib/python3.7/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \ 
- && mkdir -p /var/lib/mopidy/.config \
- && ln -s /config /var/lib/mopidy/.config/mopidy
-
 # Expose MDP and Web ports
 EXPOSE 6600 6680 5555/udp
 
@@ -145,7 +146,8 @@ USER mopidy
 # Create volumes for
 #   - local: Metadata stored by Mopidy
 #   - media: Local media files
-VOLUME ["/var/lib/mopidy/local", "/var/lib/mopidy/media"]
+# These should be mounted from outside
+#VOLUME ["/var/lib/mopidy/local", "/var/lib/mopidy/media"]
 
 # dont know yet what this does
 ENTRYPOINT ["/usr/bin/dumb-init", "/entrypoint.sh"]
