@@ -14,6 +14,7 @@ RUN set -ex \
     # (see https://docs.mopidy.com/en/latest/installation/debian/ )
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        apt-utils \
         curl \
         dumb-init \
         gcc \
@@ -50,6 +51,9 @@ RUN set -ex \
  && chown mopidy:audio -R $HOME /entrypoint.sh \
  && chmod go+rwx -R $HOME /entrypoint.sh
 
+# Switch to root for installing extensions
+USER mopidy
+
 RUN set -ex \
  && python3 -m pip install -U pip six pyasn1 requests[security] cryptography \
  && python3 -m pip install -U \
@@ -58,12 +62,15 @@ RUN set -ex \
         Mopidy-Pandora \
         Mopidy-YouTube \
         pyopenssl \
-        youtube-dl \
- && echo "mopidy ALL=NOPASSWD: /usr/local/lib/python3.7/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \
+        youtube-dl
+
+# Switch back to root for installation
+USER root
+
+RUN set -ex \
+ && echo "mopidy ALL=NOPASSWD: /usr/local/lib/python3.7/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \ 
  && mkdir -p /var/lib/mopidy/.config \
- && ln -s /config /var/lib/mopidy/.config/mopidy \
- && python3 -m pip freeze \
- && pip3 freeze
+ && ln -s /config /var/lib/mopidy/.config/mopidy
 
 # Expose MDP and Web ports
 EXPOSE 6600 6680 5555/udp
@@ -101,7 +108,7 @@ RUN apt-get purge --auto-remove -y curl gcc \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache
 
-# Runs as mopidy user by default.
+# Run as mopidy user by default.
 USER mopidy
 
 # Create volumes for
