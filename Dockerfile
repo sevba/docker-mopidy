@@ -14,6 +14,7 @@ RUN set -ex \
     # (see https://docs.mopidy.com/en/latest/installation/debian/ )
  && apt update \
  && DEBIAN_FRONTEND=noninteractive apt install -y \
+        pkg-config \
         apt-utils \
         curl \
         dumb-init \
@@ -33,10 +34,8 @@ RUN set -ex \
         mopidy \
  && curl -L https://bootstrap.pypa.io/get-pip.py | python - 
 
-
 RUN set -ex \
  apt install -y \
-    pkg-config \
     libcairo2-dev \
     libffi-dev \
     libgirepository1.0-dev \
