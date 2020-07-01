@@ -55,6 +55,10 @@ RUN set -ex \
     libjpeg-dev \
     libgif-dev
 
+RUN set -ex \
+ && apt install -y \
+    python-setuptools
+
 # Start helper script.
 COPY entrypoint.sh /entrypoint.sh
 
