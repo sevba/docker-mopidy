@@ -34,29 +34,32 @@ RUN set -ex \
         mopidy-spotify \
  && curl -L https://bootstrap.pypa.io/get-pip.py | python - 
 
-RUN set -ex \
- && apt install -y \
-    libcairo2-dev \
-    libjpeg-dev \
-    libgif-dev \
-    libffi-dev \
-    libgirepository1.0-dev \
-    libpango1.0-dev \
-    libglib2.0-dev \
- && pip install --ignore-installed --no-cache \
-       -U pygobject 
- #&& apt autoremove -y \
- #   libcairo2-dev \
- #   libffi-dev \
- #   libgirepository1.0-dev \
- #   libpango1.0-dev \
- #   libglib2.0-dev \
- #   libjpeg-dev \
- #   libgif-dev
+# RUN set -ex \
+#  && apt install -y \
+#     libcairo2-dev \
+#     libjpeg-dev \
+#     libgif-dev \
+#     libffi-dev \
+#     libgirepository1.0-dev \
+#     libpango1.0-dev \
+#     libglib2.0-dev
+#  #&& apt autoremove -y \
+#  #   libcairo2-dev \
+#  #   libffi-dev \
+#  #   libgirepository1.0-dev \
+#  #   libpango1.0-dev \
+#  #   libglib2.0-dev \
+#  #   libjpeg-dev \
+#  #   libgif-dev
 
-#RUN set -ex \
-# && apt install -y \
-#    python-setuptools
+# #RUN set -ex \
+# # && apt install -y \
+# #    python-setuptools
+
+# USER mopidy
+# RUN pip install --ignore-installed --no-cache \
+#        -U pygobject 
+# USER root
 
 # Start helper script.
 COPY entrypoint.sh /entrypoint.sh
