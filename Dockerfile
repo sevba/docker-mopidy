@@ -59,6 +59,7 @@ RUN set -ex \
  && pip install -U \
         Mopidy-Iris \
         Mopidy-Moped \
+        Mopidy-MPD \
         Mopidy-Pandora \
         Mopidy-YouTube \
         pyopenssl \
