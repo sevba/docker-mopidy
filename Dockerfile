@@ -43,7 +43,6 @@ RUN set -ex \
     libgirepository1.0-dev \
     libpango1.0-dev \
     libglib2.0-dev \
-    python3.7-dev \
  && pip install --ignore-installed --no-cache \
        -U pygobject 
  #&& apt autoremove -y \
