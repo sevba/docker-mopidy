@@ -31,6 +31,7 @@ RUN set -ex \
  && apt update \
  && DEBIAN_FRONTEND=noninteractive apt install -y \
         mopidy \
+        mopidy-spotify \
  && curl -L https://bootstrap.pypa.io/get-pip.py | python - 
 
 RUN set -ex \
@@ -44,7 +45,7 @@ RUN set -ex \
     libglib2.0-dev \
     python3.7-dev \
  && pip install --ignore-installed --no-cache \
-        pygobject \
+       -U pygobject \
  && apt autoremove -y \
     libcairo2-dev \
     libffi-dev \
@@ -80,7 +81,6 @@ RUN set -ex \
         Mopidy-Iris \
         Mopidy-Moped \
         Mopidy-GMusic \
-        Mopidy-Spotify \
         Mopidy-SoundCloud \
         Mopidy-MPD \
         Mopidy-Pandora \
