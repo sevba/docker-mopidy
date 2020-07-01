@@ -59,6 +59,8 @@ USER mopidy
 RUN set -ex \
  && pip install -U pip six pyasn1 requests[security] cryptography \
  && pip install -U \
+        pygobject \
+ && pip install -U \
         Mopidy-Iris \
         Mopidy-Moped \
         Mopidy-MPD \
