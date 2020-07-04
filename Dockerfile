@@ -66,11 +66,6 @@ RUN set -ex \
     libjpeg-dev \
     libgif-dev
 
- USER mopidy
- RUN pip install --ignore-installed --no-cache -U \
-       pygobject
- USER root
-
 # Start helper script.
 COPY entrypoint.sh /entrypoint.sh
 
