@@ -70,9 +70,10 @@ RUN set -ex \
 #  #   libjpeg-dev \
 #  #   libgif-dev
 
-# #RUN set -ex \
-# # && apt install -y \
-# #    python-setuptools
+RUN set -ex \
+ && apt install -y \
+    python-setuptools \
+    python3-setuptools
 
 # USER mopidy
 # RUN pip install --ignore-installed --no-cache \
