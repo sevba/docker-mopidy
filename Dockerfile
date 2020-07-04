@@ -27,6 +27,8 @@ RUN set -ex \
         dumb-init \
         gcc \
         python3-gi \
+        python3-gi-cairo \
+        gir1.2-gtk-3.0 \
         python3-gst-1.0 \
         gstreamer1.0-alsa \
         gstreamer1.0-plugins-bad \
