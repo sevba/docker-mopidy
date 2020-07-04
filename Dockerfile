@@ -58,18 +58,16 @@ RUN set -ex \
     libpango1.0-dev \
     libglib2.0-dev \
     pkg-config \
-    libcairo2-dev \
     gcc \
     python3-dev \
-    libgirepository1.0-dev \
- && apt autoremove -y \
-    libcairo2-dev \
-    libffi-dev \
-    libgirepository1.0-dev \
-    libpango1.0-dev \
-    libglib2.0-dev \
-    libjpeg-dev \
-    libgif-dev
+    libgirepository1.0-dev
+ #&& apt autoremove -y \
+ #   libffi-dev \
+ #   libgirepository1.0-dev \
+ #   libpango1.0-dev \
+ #   libglib2.0-dev \
+ #   libjpeg-dev \
+ #   libgif-dev
 
 # Start helper script.
 COPY entrypoint.sh /entrypoint.sh
