@@ -33,19 +33,12 @@ RUN set -ex \
         python-crypto \
         libavahi-common3 \
         libavahi-client3 \
+        python3-setuptools \
  && DEBIAN_FRONTEND=noninteractive apt install -y \
         mopidy \
         mopidy-soundcloud \
         mopidy-spotify \
- && curl -L https://bootstrap.pypa.io/get-pip.py | python - \
- && pip install \
-      pip \
-      six \
-      pyasn1 \
-      requests[security] \
-      cryptography \
-      pyopenssl \
-      youtube-dl
+ && curl -L https://bootstrap.pypa.io/get-pip.py | python -
 
 RUN set -ex \
  && echo "mopidy ALL = (ALL)  NOPASSWD: /var/lib/mopidy/.local/lib/python3.7/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \ 
@@ -69,11 +62,6 @@ RUN set -ex \
 #  #   libglib2.0-dev \
 #  #   libjpeg-dev \
 #  #   libgif-dev
-
-RUN set -ex \
- && apt install -y \
-    python-setuptools \
-    python3-setuptools
 
 # USER mopidy
 # RUN pip install --ignore-installed --no-cache \
@@ -100,6 +88,14 @@ RUN set -ex \
 USER mopidy
 
 RUN set -ex \
+ && pip install \
+      pip \
+      six \
+      pyasn1 \
+      requests[security] \
+      cryptography \
+      pyopenssl \
+      youtube-dl \
  && pip install -U \
         Mopidy-Local \
         Mopidy-Iris \
