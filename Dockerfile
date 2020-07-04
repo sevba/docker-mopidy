@@ -1,7 +1,8 @@
 FROM python:3.7-slim-buster
 
 # update pkg registry
-RUN apt update \
+RUN set -ex \
+ && apt update \
  && apt install -y \
      gnupg \
      curl \
@@ -20,8 +21,8 @@ RUN set -ex \
     # Official Mopidy install for Debian/Ubuntu along with some extensions
     # (see https://docs.mopidy.com/en/latest/installation/debian/ )
  && DEBIAN_FRONTEND=noninteractive apt install -y \
-        # pkg-config \
-        # apt-utils \
+        pkg-config \
+        apt-utils \
         sudo \
         dumb-init \
         gcc \
@@ -36,7 +37,15 @@ RUN set -ex \
         mopidy \
         mopidy-soundcloud \
         mopidy-spotify \
- && curl -L https://bootstrap.pypa.io/get-pip.py | python - 
+ && curl -L https://bootstrap.pypa.io/get-pip.py | python - \
+ && pip install \
+      pip \
+      six \
+      pyasn1 \
+      requests[security] \
+      cryptography \
+      pyopenssl \
+      youtube-dl
 
 RUN set -ex \
  && echo "mopidy ALL = (ALL)  NOPASSWD: /var/lib/mopidy/.local/lib/python3.7/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \ 
@@ -90,7 +99,6 @@ RUN set -ex \
 USER mopidy
 
 RUN set -ex \
- && pip install -U pip six pyasn1 requests[security] cryptography \
  && pip install -U \
         Mopidy-Local \
         Mopidy-Iris \
@@ -98,9 +106,7 @@ RUN set -ex \
         Mopidy-GMusic \
         Mopidy-MPD \
         Mopidy-Pandora \
-        Mopidy-YouTube \
-        pyopenssl \
-        youtube-dl
+        Mopidy-YouTube
 
 # Switch back to root for installation
 USER root
