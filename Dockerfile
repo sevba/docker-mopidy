@@ -54,7 +54,7 @@ RUN set -ex \
     libffi-dev \
     libgirepository1.0-dev \
     libpango1.0-dev \
-    libglib2.0-dev
+    libglib2.0-dev \
  && apt autoremove -y \
     libcairo2-dev \
     libffi-dev \
@@ -65,8 +65,8 @@ RUN set -ex \
     libgif-dev
 
  USER mopidy
- RUN pip install --ignore-installed --no-cache \
-        -U pygobject 
+ RUN pip install --ignore-installed --no-cache -U \
+       pygobject
  USER root
 
 # Start helper script.
