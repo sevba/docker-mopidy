@@ -26,10 +26,11 @@ RUN set -ex \
         sudo \
         dumb-init \
         gcc \
-        # python3-gi \
-        # python3-gst-1.0 \
+        python3-gi \
+        python3-gst-1.0 \
         gstreamer1.0-alsa \
         gstreamer1.0-plugins-bad \
+        gstreamer1.0-python3-plugin-loader \
         python-crypto \
         libavahi-common3 \
         libavahi-client3 \
@@ -45,28 +46,28 @@ RUN set -ex \
  && mkdir -p /var/lib/mopidy/.config \
  && ln -s /config /var/lib/mopidy/.config/mopidy
 
-# RUN set -ex \
-#  && apt install -y \
-#     libcairo2-dev \
-#     libjpeg-dev \
-#     libgif-dev \
-#     libffi-dev \
-#     libgirepository1.0-dev \
-#     libpango1.0-dev \
-#     libglib2.0-dev
-#  #&& apt autoremove -y \
-#  #   libcairo2-dev \
-#  #   libffi-dev \
-#  #   libgirepository1.0-dev \
-#  #   libpango1.0-dev \
-#  #   libglib2.0-dev \
-#  #   libjpeg-dev \
-#  #   libgif-dev
+RUN set -ex \
+ && apt install -y \
+    libcairo2-dev \
+    libjpeg-dev \
+    libgif-dev \
+    libffi-dev \
+    libgirepository1.0-dev \
+    libpango1.0-dev \
+    libglib2.0-dev
+ && apt autoremove -y \
+    libcairo2-dev \
+    libffi-dev \
+    libgirepository1.0-dev \
+    libpango1.0-dev \
+    libglib2.0-dev \
+    libjpeg-dev \
+    libgif-dev
 
-# USER mopidy
-# RUN pip install --ignore-installed --no-cache \
-#        -U pygobject 
-# USER root
+ USER mopidy
+ RUN pip install --ignore-installed --no-cache \
+        -U pygobject 
+ USER root
 
 # Start helper script.
 COPY entrypoint.sh /entrypoint.sh
