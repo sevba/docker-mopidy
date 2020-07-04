@@ -57,6 +57,11 @@ RUN set -ex \
     libgirepository1.0-dev \
     libpango1.0-dev \
     libglib2.0-dev \
+    pkg-config \
+    libcairo2-dev \
+    gcc \
+    python3-dev \
+    libgirepository1.0-dev \
  && apt autoremove -y \
     libcairo2-dev \
     libffi-dev \
@@ -94,6 +99,8 @@ RUN set -ex \
       cryptography \
       pyopenssl \
       youtube-dl \
+      gobject \
+      PyGObject \
  && pip install -U \
         Mopidy-Local \
         Mopidy-Iris \
