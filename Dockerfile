@@ -51,6 +51,7 @@ RUN set -ex \
 
 RUN set -ex \
  && echo "mopidy ALL = (ALL)  NOPASSWD: /root/.local/lib/python3.8/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \
+ && mkdir /root/.config \
  && ln -s /config /root/.config/mopidy
 
 #RUN set -ex \
@@ -78,7 +79,7 @@ COPY pulse-client.conf /etc/pulse/client.conf
 #ENV HOME=/var/lib/mopidy
 
 # Force the use of python 3 for mopidy
-RUN sed -i 's/python3/python3.8/' /usr/bin/mopidy
+#RUN sed -i 's/python3/python3.8/' /usr/bin/mopidy
 
 # Switch to mopidy user for installing extensions
 #USER mopidy
