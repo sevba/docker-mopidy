@@ -55,8 +55,8 @@ RUN set -ex \
  && mkdir -p /var/lib/mopidy/.config \
  && ln -s /config /var/lib/mopidy/.config/mopidy
 
-RUN set -ex \
- && apt-get install -y \
+#RUN set -ex \
+# && apt-get install -y \
 #    libjpeg-dev \
 #    libgif-dev \
 #    libpango1.0-dev \
