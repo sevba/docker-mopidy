@@ -1,4 +1,4 @@
-FROM python:3.7-slim-buster
+FROM python:3.8-slim-buster
 
 # update pkg registry
 RUN set -ex \
@@ -23,7 +23,6 @@ RUN set -ex \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         pkg-config \
         sudo \
-        dumb-init \
         gcc \
         gnupg \
         python3-gi \
@@ -51,27 +50,18 @@ RUN set -ex \
 
 
 RUN set -ex \
- && echo "mopidy ALL = (ALL)  NOPASSWD: /var/lib/mopidy/.local/lib/python3.7/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \
- #&& echo "mopidy ALL=NOPASSWD: /usr/local/lib/python3.7/dist-packages/mopidy_iris/system.sh" >> /etc/sudoers \
+ && echo "mopidy ALL = (ALL)  NOPASSWD: /var/lib/mopidy/.local/lib/python3.8/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \
+ #&& echo "mopidy ALL=NOPASSWD: /usr/local/lib/python3.8/dist-packages/mopidy_iris/system.sh" >> /etc/sudoers \
  && mkdir -p /var/lib/mopidy/.config \
  && ln -s /config /var/lib/mopidy/.config/mopidy
 
 RUN set -ex \
  && apt-get install -y \
-    libjpeg-dev \
-    libgif-dev \
-    libpango1.0-dev \
-    pkg-config \
-    gcc \
-    python3-dev \
-    libgirepository1.0-dev
- #&& apt-get autoremove -y \
- #   libffi-dev \
- #   libgirepository1.0-dev \
- #   libpango1.0-dev \
- #   libglib2.0-dev \
- #   libjpeg-dev \
- #   libgif-dev
+#    libjpeg-dev \
+#    libgif-dev \
+#    libpango1.0-dev \
+#    pkg-config \
+#    python3-dev \
     # These are old (python2) packages, which are no longer required
     #libcairo2-dev \
     #libffi-dev \
@@ -87,15 +77,10 @@ COPY mopidy.conf /config/mopidy.conf
 # Copy the pulse-client configuratrion.
 COPY pulse-client.conf /etc/pulse/client.conf
 
-# Allows any user to run mopidy, but runs by default as a randomly generated UID/GID.
 ENV HOME=/var/lib/mopidy
-RUN set -ex \
- && usermod -G audio,sudo mopidy
- #&& chown mopidy:audio -R $HOME /entrypoint.sh \
- #&& chmod go+rwx -R $HOME /entrypoint.sh
 
 # Force the use of python 3 for mopidy
-RUN sed -i 's/python3/python3.7/' /usr/bin/mopidy
+RUN sed -i 's/python3/python3.8/' /usr/bin/mopidy
 
 # Switch to mopidy user for installing extensions
 USER mopidy
@@ -146,24 +131,13 @@ EXPOSE 1704
 # https://docs.docker.com/config/containers/multi-service_container/
 
 RUN apt-get install -y supervisor \
-&& mkdir -p /var/log/supervisor
-
-# Clean-up
-RUN apt-get purge --auto-remove -y curl gcc \
+ && mkdir -p /var/log/supervisor \
+ && apt-get purge --auto-remove -y curl gcc \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache
 
 # Run as mopidy user by default.
 USER mopidy
-
-# Create volumes for
-#   - local: Metadata stored by Mopidy
-#   - media: Local media files
-# These should be mounted from outside
-#VOLUME ["/var/lib/mopidy/local", "/var/lib/mopidy/media"]
-
-# dont know yet what this does
-#ENTRYPOINT ["/usr/bin/dumb-init", "/entrypoint.sh"]
 
 # Copy launch script (will later be replaced with supervisord)
 COPY launch.sh launch.sh
