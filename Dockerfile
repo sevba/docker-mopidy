@@ -33,7 +33,7 @@ RUN set -ex \
         gstreamer1.0-alsa \
         gstreamer1.0-plugins-bad \
         gstreamer1.0-python3-plugin-loader \
-        python-crypto \
+        python3-crypto \
         libavahi-common3 \
         libavahi-client3 \
         python3-setuptools \
