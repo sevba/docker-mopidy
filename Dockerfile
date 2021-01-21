@@ -23,21 +23,21 @@ RUN set -ex \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         pkg-config \
         sudo \
-        gcc \
-        gnupg \
-        python3-gi \
-        python3-gi-cairo \
-        gir1.2-gtk-3.0 \
-        python3-gst-1.0 \
-        gstreamer1.0-alsa \
-        gstreamer1.0-plugins-bad \
-        gstreamer1.0-python3-plugin-loader \
-        python3-crypto \
-        libavahi-common3 \
-        libavahi-client3 \
-        python3-setuptools \
-        python3-crypto \
-        python3-distutils \
+#        gcc \
+#        gnupg \
+#        python3-gi \
+#        python3-gi-cairo \
+#        gir1.2-gtk-3.0 \
+#        python3-gst-1.0 \
+#        gstreamer1.0-alsa \
+#        gstreamer1.0-plugins-bad \
+#        gstreamer1.0-python3-plugin-loader \
+#        python3-crypto \
+#        libavahi-common3 \
+#        libavahi-client3 \
+#        python3-setuptools \
+#        python3-crypto \
+#        python3-distutils \
  && curl -L https://bootstrap.pypa.io/get-pip.py | python3 - \
  && pip install pipenv \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -77,7 +77,7 @@ COPY mopidy.conf /config/mopidy.conf
 # Copy the pulse-client configuratrion.
 COPY pulse-client.conf /etc/pulse/client.conf
 
-ENV HOME=/var/lib/mopidy
+#ENV HOME=/var/lib/mopidy
 
 # Force the use of python 3 for mopidy
 RUN sed -i 's/python3/python3.8/' /usr/bin/mopidy
@@ -85,16 +85,16 @@ RUN sed -i 's/python3/python3.8/' /usr/bin/mopidy
 # Switch to mopidy user for installing extensions
 USER mopidy
 
-RUN set -ex \
- && pip3 install \
-      pip \
-      six \
-      pyasn1 \
-      requests[security] \
-      cryptography \
-      pyopenssl \
-      gobject \
-      PyGObject
+#RUN set -ex \
+# && pip3 install \
+#      pip \
+#      six \
+#      pyasn1 \
+#      requests[security] \
+#      cryptography \
+#      pyopenssl \
+#      gobject \
+#      PyGObject
 
 COPY Pipfile Pipfile.lock /
 RUN set -ex \
@@ -137,7 +137,7 @@ RUN apt-get install -y supervisor \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache
 
 # Run as mopidy user by default.
-USER mopidy
+#USER mopidy
 
 # Copy launch script (will later be replaced with supervisord)
 COPY launch.sh launch.sh
