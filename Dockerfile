@@ -78,13 +78,8 @@ RUN set -ex \
     #libgirepository1.0-dev \
     #libglib2.0-dev \
 
-COPY Pipfile Pipfile.lock /
-
-RUN set -ex \
- && pipenv install --system --deploy
-
 # Start helper script.
-COPY entrypoint.sh /entrypoint.sh
+#COPY entrypoint.sh /entrypoint.sh
 
 # Default configuration.
 COPY mopidy.conf /config/mopidy.conf
@@ -106,7 +101,7 @@ RUN sed -i 's/python3/python3.7/' /usr/bin/mopidy
 USER mopidy
 
 RUN set -ex \
- && pip install \
+ && pip3 install \
       pip \
       six \
       pyasn1 \
@@ -115,6 +110,10 @@ RUN set -ex \
       pyopenssl \
       gobject \
       PyGObject
+
+COPY Pipfile Pipfile.lock /
+RUN set -ex \
+ && pipenv install --system --deploy
 
 # Basic check,
 RUN /usr/bin/dumb-init /entrypoint.sh /usr/bin/mopidy --version
