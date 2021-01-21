@@ -1,10 +1,11 @@
 FROM archlinux:latest
 
 ##  Copy fallback configuration.
-#COPY mopidy.conf /etc/default/mopidy.conf
+COPY mopidy.conf /etc/default/mopidy.conf
 
 #  Copy default configuration.
-#COPY mopidy.conf /etc/mopidy/mopidy.conf
+RUN mkdir /etc/mopidy
+COPY mopidy.conf /etc/mopidy/mopidy.conf
 
 # Copy helper script.
 COPY entrypoint.sh /entrypoint.sh
@@ -25,7 +26,7 @@ RUN pacman -S --noconfirm mopidy
 
 # Install extensions
 # TODO: maybe needs pip?
-RUN pacman -S --noconfirm python-pipenv
+RUN pacman -S --noconfirm which python-pipenv
 
 COPY Pipfile Pipfile.lock /
 RUN set -ex \
