@@ -1,109 +1,61 @@
-FROM python:3.8-slim-buster
+FROM alpine:3.8
 
-# update pkg registry
-RUN set -ex \
- && apt-get update \
- && apt-get install -y \
-     gnupg \
-     curl \
-     apt-utils \
- && curl -L https://apt.mopidy.com/mopidy.gpg | apt-key add - \
- && curl -L https://apt.mopidy.com/mopidy.list -o /etc/apt/sources.list.d/mopidy.list \
- && apt-get update
+RUN mkdir /etc/default && mkdir /etc/mopidy
 
-######################################
-########### Mopidy setup #############
+##  Copy fallback configuration.
+COPY mopidy.conf /etc/default/mopidy.conf
 
-# add things to PATH
-ENV PATH="/root/.local/bin:${PATH}"
-ENV PATH="/var/lib/mopidy/.local/bin:${PATH}"
-RUN set -ex \
-    # Official Mopidy install for Debian/Ubuntu along with some extensions
-    # (see https://docs.mopidy.com/en/latest/installation/debian/ )
- && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        pkg-config \
-        sudo \
-#        gcc \
-#        gnupg \
-#        python3-gi \
-#        python3-gi-cairo \
-#        gir1.2-gtk-3.0 \
-#        python3-gst-1.0 \
-#        gstreamer1.0-alsa \
-#        gstreamer1.0-plugins-bad \
-#        gstreamer1.0-python3-plugin-loader \
-#        python3-crypto \
-#        libavahi-common3 \
-#        libavahi-client3 \
-#        python3-setuptools \
-#        python3-crypto \
-#        python3-distutils \
- && curl -L https://bootstrap.pypa.io/get-pip.py | python3 - \
- && pip install pipenv \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        mopidy \
-        mopidy-soundcloud \
-        mopidy-spotify
+#  Copy default configuration.
+COPY mopidy.conf /etc/mopidy/mopidy.conf
 
-# NOTE: Spotify and Soundcloud extensions don't install correctly
-#       when using the pip installation method..
+# Copy helper script.
+COPY entrypoint.sh /entrypoint.sh
 
+RUN apk update \
+  && apk upgrade \
+  && apk add --no-cache \
+  --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+  mopidy
 
-RUN set -ex \
- && echo "mopidy ALL = (ALL)  NOPASSWD: /root/.local/lib/python3.8/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \
- && mkdir /root/.config \
- && ln -s /config /root/.config/mopidy
+# I cant explain why, but to me it seems
+# I have less pause in streams if I
+# also install these. However image size
+# also grows by about 80MB
+#RUN apk add --no-cache \
+#  gst-plugins-base0.10 \
+#  gst-plugins-good0.10 \
+#  gst-plugins-ugly0.10 \
+#  py-gst0.10
 
-#RUN set -ex \
-# && apt-get install -y \
-#    libjpeg-dev \
-#    libgif-dev \
-#    libpango1.0-dev \
-#    pkg-config \
-#    python3-dev \
-    # These are old (python2) packages, which are no longer required
-    #libcairo2-dev \
-    #libffi-dev \
-    #libgirepository1.0-dev \
-    #libglib2.0-dev \
-
-# Start helper script.
-#COPY entrypoint.sh /entrypoint.sh
-
-# Default configuration.
-COPY mopidy.conf /config/mopidy.conf
+## Install Pip and pipenv to install extensions
+RUN apk add --no-cache \
+  py-pip \
+  && pip install --upgrade pip pipenv
 
 # Copy the pulse-client configuratrion.
 COPY pulse-client.conf /etc/pulse/client.conf
 
-#ENV HOME=/var/lib/mopidy
+## Install extensions
 
-# Force the use of python 3 for mopidy
-#RUN sed -i 's/python3/python3.8/' /usr/bin/mopidy
 
-# Switch to mopidy user for installing extensions
-#USER mopidy
-
-#RUN set -ex \
-# && pip3 install \
-#      pip \
-#      six \
-#      pyasn1 \
-#      requests[security] \
-#      cryptography \
-#      pyopenssl \
-#      gobject \
-#      PyGObject
+RUN pip install -U Mopidy-MusicBox-Webclient
 
 COPY Pipfile Pipfile.lock /
 RUN set -ex \
  && pipenv install --system --deploy
 
-# Switch back to root for installation
-USER root
 
-# Expose MDP and Web ports
+# TODO: sudo may be needed
+# NOTE: Spotify and Soundcloud extensions don't install correctly
+#       when using the pip installation method..
+RUN set -ex \
+ && echo "mopidy ALL = (ALL)  NOPASSWD: /root/.local/lib/python3.8/site-packages/mopidy_iris/system.sh" >> /etc/sudoers
+
+VOLUME ["/etc/mopidy", "/var/lib/mopidy"]
+
 EXPOSE 6600 6680 5555/udp
+
+ENTRYPOINT ["/entrypoint.sh"]
 
 ######################################
 ########### Snapcast setup ###########
@@ -124,26 +76,26 @@ RUN mkdir -p /root/.config/snapcast/
 # Expose TCP port used to stream audio data to snapclient instances
 EXPOSE 1704
 
-######################################
-########### Supervisor setup #########
-
-# https://docs.docker.com/config/containers/multi-service_container/
-
-RUN apt-get install -y supervisor \
- && mkdir -p /var/log/supervisor \
- && apt-get purge --auto-remove -y curl gcc \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache
-
-# Run as mopidy user by default.
-#USER mopidy
-
-# Copy launch script (will later be replaced with supervisord)
-COPY launch.sh launch.sh
-CMD ["./launch.sh"]
-
-# TODO: use supervisord to manage both mopidy as well as snapcast server
-# CMD ["/usr/bin/supervisord"]
+#######################################
+############ Supervisor setup #########
+#
+## https://docs.docker.com/config/containers/multi-service_container/
+#
+#RUN apt-get install -y supervisor \
+# && mkdir -p /var/log/supervisor \
+# && apt-get purge --auto-remove -y curl gcc \
+# && apt-get clean \
+# && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache
+#
+## Run as mopidy user by default.
+##USER mopidy
+#
+## Copy launch script (will later be replaced with supervisord)
+#COPY launch.sh launch.sh
+#CMD ["./launch.sh"]
+#
+## TODO: use supervisord to manage both mopidy as well as snapcast server
+## CMD ["/usr/bin/supervisord"]
 
 HEALTHCHECK --interval=5s --timeout=2s --retries=20 \
     CMD curl --connect-timeout 5 --silent --show-error --fail http://localhost:6680/ || exit 1
