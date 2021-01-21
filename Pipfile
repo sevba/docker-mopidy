@@ -15,8 +15,9 @@ mopidy-youtube = "*"
 pyopenssl = "*"
 
 mopidy-mpd = "*"
-mopidy-soundcloud = "*"
-mopidy-spotify = "*"
+# These do not install correctly via pip...
+#mopidy-soundcloud = "*"
+#mopidy-spotify = "*"
 
 [requires]
 python_version = "3"

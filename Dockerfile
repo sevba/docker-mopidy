@@ -2,13 +2,14 @@ FROM python:3.8-slim-buster
 
 # update pkg registry
 RUN set -ex \
- && apt update \
- && apt install -y \
+ && apt-get update \
+ && apt-get install -y \
      gnupg \
      curl \
+     apt-utils \
  && curl -L https://apt.mopidy.com/mopidy.gpg | apt-key add - \
  && curl -L https://apt.mopidy.com/mopidy.list -o /etc/apt/sources.list.d/mopidy.list \
- && apt update
+ && apt-get update
 
 ######################################
 ########### Mopidy setup #############
@@ -19,9 +20,8 @@ ENV PATH="/var/lib/mopidy/.local/bin:${PATH}"
 RUN set -ex \
     # Official Mopidy install for Debian/Ubuntu along with some extensions
     # (see https://docs.mopidy.com/en/latest/installation/debian/ )
- && DEBIAN_FRONTEND=noninteractive apt install -y \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         pkg-config \
-        apt-utils \
         sudo \
         dumb-init \
         gcc \
@@ -41,18 +41,22 @@ RUN set -ex \
         python3-distutils \
  && curl -L https://bootstrap.pypa.io/get-pip.py | python3 - \
  && pip install pipenv \
- && DEBIAN_FRONTEND=noninteractive apt install -y \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         mopidy \
         mopidy-soundcloud \
         mopidy-spotify
 
+# NOTE: Spotify and Soundcloud extensions don't install correctly
+#       when using the pip installation method..
+
+
 RUN set -ex \
- && echo "mopidy ALL = (ALL)  NOPASSWD: /var/lib/mopidy/.local/lib/python3.7/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \
+ && echo "mopidy ALL = (ALL)  NOPASSWD: /var/lib/mopidy/.local/lib/python3.8/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \
  && mkdir -p /var/lib/mopidy/.config \
  && ln -s /config /var/lib/mopidy/.config/mopidy
 
 RUN set -ex \
- && apt install -y \
+ && apt-get install -y \
     libcairo2-dev \
     libjpeg-dev \
     libgif-dev \
@@ -64,7 +68,7 @@ RUN set -ex \
     gcc \
     python3-dev \
     libgirepository1.0-dev
- #&& apt autoremove -y \
+ #&& apt-get autoremove -y \
  #   libffi-dev \
  #   libgirepository1.0-dev \
  #   libpango1.0-dev \
@@ -127,7 +131,7 @@ RUN curl -LO 'https://github.com/badaix/snapcast/releases/download/v'$SNAPCASTVE
 
 # Install snapcast package
 RUN dpkg -i --force-all 'snapserver_'$SNAPCASTVERSION$SNAPCASTDEP_SUFFIX'_amd64.deb'
-RUN apt -f install -y
+RUN apt-get -f install -y
 
 # Create config directory
 RUN mkdir -p /root/.config/snapcast/
@@ -140,12 +144,12 @@ EXPOSE 1704
 
 # https://docs.docker.com/config/containers/multi-service_container/
 
-RUN apt install -y supervisor \
+RUN apt-get install -y supervisor \
 && mkdir -p /var/log/supervisor
 
 # Clean-up
-RUN apt purge --auto-remove -y curl gcc \
- && apt clean \
+RUN apt-get purge --auto-remove -y curl gcc \
+ && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache
 
 # Run as mopidy user by default.
