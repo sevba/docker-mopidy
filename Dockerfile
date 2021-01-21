@@ -50,10 +50,8 @@ RUN set -ex \
 
 
 RUN set -ex \
- && echo "mopidy ALL = (ALL)  NOPASSWD: /var/lib/mopidy/.local/lib/python3.8/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \
- #&& echo "mopidy ALL=NOPASSWD: /usr/local/lib/python3.8/dist-packages/mopidy_iris/system.sh" >> /etc/sudoers \
- && mkdir -p /var/lib/mopidy/.config \
- && ln -s /config /var/lib/mopidy/.config/mopidy
+ && echo "mopidy ALL = (ALL)  NOPASSWD: /root/.local/lib/python3.8/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \
+ && ln -s /config /root/.config/mopidy
 
 #RUN set -ex \
 # && apt-get install -y \
@@ -83,7 +81,7 @@ COPY pulse-client.conf /etc/pulse/client.conf
 RUN sed -i 's/python3/python3.8/' /usr/bin/mopidy
 
 # Switch to mopidy user for installing extensions
-USER mopidy
+#USER mopidy
 
 #RUN set -ex \
 # && pip3 install \
