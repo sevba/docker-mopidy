@@ -6,7 +6,6 @@ RUN set -ex \
  && apt install -y \
      gnupg \
      curl \
-     wget \
  && curl -L https://apt.mopidy.com/mopidy.gpg | apt-key add - \
  && curl -L https://apt.mopidy.com/mopidy.list -o /etc/apt/sources.list.d/mopidy.list \
  && apt update
@@ -45,8 +44,7 @@ RUN set -ex \
  && DEBIAN_FRONTEND=noninteractive apt install -y \
         mopidy \
         mopidy-soundcloud \
-        mopidy-spotify \
- && curl -L https://bootstrap.pypa.io/get-pip.py | python -
+        mopidy-spotify
 
 RUN set -ex \
  && echo "mopidy ALL = (ALL)  NOPASSWD: /var/lib/mopidy/.local/lib/python3.7/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \
@@ -106,17 +104,8 @@ RUN set -ex \
       requests[security] \
       cryptography \
       pyopenssl \
-      youtube-dl \
       gobject \
-      PyGObject \
- && pip install -U \
-        Mopidy-Local \
-        Mopidy-Iris \
-        Mopidy-Moped \
-        Mopidy-GMusic \
-        Mopidy-MPD \
-        Mopidy-Pandora \
-        Mopidy-YouTube
+      PyGObject
 
 # Basic check,
 RUN /usr/bin/dumb-init /entrypoint.sh /usr/bin/mopidy --version
@@ -134,7 +123,7 @@ ARG SNAPCASTVERSION=0.20.0
 ARG SNAPCASTDEP_SUFFIX=-1
 
 # Download snapcast package
-RUN wget 'https://github.com/badaix/snapcast/releases/download/v'$SNAPCASTVERSION'/snapserver_'$SNAPCASTVERSION$SNAPCASTDEP_SUFFIX'_amd64.deb'
+RUN curl -LO 'https://github.com/badaix/snapcast/releases/download/v'$SNAPCASTVERSION'/snapserver_'$SNAPCASTVERSION$SNAPCASTDEP_SUFFIX'_amd64.deb'
 
 # Install snapcast package
 RUN dpkg -i --force-all 'snapserver_'$SNAPCASTVERSION$SNAPCASTDEP_SUFFIX'_amd64.deb'

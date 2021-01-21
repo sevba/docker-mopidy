@@ -14,5 +14,9 @@ mopidy-pandora = "*"
 mopidy-youtube = "*"
 pyopenssl = "*"
 
+mopidy-mpd = "*"
+mopidy-soundcloud = "*"
+mopidy-spotify = "*"
+
 [requires]
 python_version = "3"
