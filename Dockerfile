@@ -98,6 +98,9 @@ RUN set -ex \
  && chown mopidy:audio -R $HOME /entrypoint.sh \
  && chmod go+rwx -R $HOME /entrypoint.sh
 
+# Force the use of python 3 for mopidy
+RUN sed -i 's/python3/python3.7/' /usr/bin/mopidy
+
 # Switch to mopidy user for installing extensions
 USER mopidy
 
