@@ -1,4 +1,4 @@
-FROM python:3.7-slim-buster
+FROM python:3.8-slim-buster
 
 # update pkg registry
 RUN set -ex \
@@ -26,6 +26,7 @@ RUN set -ex \
         sudo \
         dumb-init \
         gcc \
+        gnupg \
         python3-gi \
         python3-gi-cairo \
         gir1.2-gtk-3.0 \
@@ -37,6 +38,10 @@ RUN set -ex \
         libavahi-common3 \
         libavahi-client3 \
         python3-setuptools \
+        python3-crypto \
+        python3-distutils \
+ && curl -L https://bootstrap.pypa.io/get-pip.py | python3 - \
+ && pip install pipenv \
  && DEBIAN_FRONTEND=noninteractive apt install -y \
         mopidy \
         mopidy-soundcloud \
@@ -44,7 +49,7 @@ RUN set -ex \
  && curl -L https://bootstrap.pypa.io/get-pip.py | python -
 
 RUN set -ex \
- && echo "mopidy ALL = (ALL)  NOPASSWD: /var/lib/mopidy/.local/lib/python3.7/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \ 
+ && echo "mopidy ALL = (ALL)  NOPASSWD: /var/lib/mopidy/.local/lib/python3.7/site-packages/mopidy_iris/system.sh" >> /etc/sudoers \
  && mkdir -p /var/lib/mopidy/.config \
  && ln -s /config /var/lib/mopidy/.config/mopidy
 
@@ -68,6 +73,15 @@ RUN set -ex \
  #   libglib2.0-dev \
  #   libjpeg-dev \
  #   libgif-dev
+
+COPY Pipfile Pipfile.lock /
+
+RUN set -ex \
+ && pipenv install --system --deploy
+
+RUN set -ex \
+ && mkdir -p /var/lib/mopidy/.config \
+ && ln -s /config /var/lib/mopidy/.config/mopidy
 
 # Start helper script.
 COPY entrypoint.sh /entrypoint.sh
@@ -107,6 +121,9 @@ RUN set -ex \
         Mopidy-MPD \
         Mopidy-Pandora \
         Mopidy-YouTube
+
+# Basic check,
+RUN /usr/bin/dumb-init /entrypoint.sh /usr/bin/mopidy --version
 
 # Switch back to root for installation
 USER root
@@ -164,3 +181,6 @@ CMD ["./launch.sh"]
 
 # TODO: use supervisord to manage both mopidy as well as snapcast server
 # CMD ["/usr/bin/supervisord"]
+
+HEALTHCHECK --interval=5s --timeout=2s --retries=20 \
+    CMD curl --connect-timeout 5 --silent --show-error --fail http://localhost:6680/ || exit 1
