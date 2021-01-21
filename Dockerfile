@@ -90,9 +90,9 @@ COPY pulse-client.conf /etc/pulse/client.conf
 # Allows any user to run mopidy, but runs by default as a randomly generated UID/GID.
 ENV HOME=/var/lib/mopidy
 RUN set -ex \
- && usermod -G audio,sudo mopidy \
- && chown mopidy:audio -R $HOME /entrypoint.sh \
- && chmod go+rwx -R $HOME /entrypoint.sh
+ && usermod -G audio,sudo mopidy
+ #&& chown mopidy:audio -R $HOME /entrypoint.sh \
+ #&& chmod go+rwx -R $HOME /entrypoint.sh
 
 # Force the use of python 3 for mopidy
 RUN sed -i 's/python3/python3.7/' /usr/bin/mopidy
@@ -114,9 +114,6 @@ RUN set -ex \
 COPY Pipfile Pipfile.lock /
 RUN set -ex \
  && pipenv install --system --deploy
-
-# Basic check,
-RUN /usr/bin/dumb-init /entrypoint.sh /usr/bin/mopidy --version
 
 # Switch back to root for installation
 USER root
@@ -166,7 +163,7 @@ USER mopidy
 #VOLUME ["/var/lib/mopidy/local", "/var/lib/mopidy/media"]
 
 # dont know yet what this does
-ENTRYPOINT ["/usr/bin/dumb-init", "/entrypoint.sh"]
+#ENTRYPOINT ["/usr/bin/dumb-init", "/entrypoint.sh"]
 
 # Copy launch script (will later be replaced with supervisord)
 COPY launch.sh launch.sh
