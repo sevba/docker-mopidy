@@ -58,13 +58,9 @@ RUN set -ex \
 
 RUN set -ex \
  && apt-get install -y \
-    libcairo2-dev \
     libjpeg-dev \
     libgif-dev \
-    libffi-dev \
-    libgirepository1.0-dev \
     libpango1.0-dev \
-    libglib2.0-dev \
     pkg-config \
     gcc \
     python3-dev \
@@ -76,6 +72,11 @@ RUN set -ex \
  #   libglib2.0-dev \
  #   libjpeg-dev \
  #   libgif-dev
+    # These are old (python2) packages, which are no longer required
+    #libcairo2-dev \
+    #libffi-dev \
+    #libgirepository1.0-dev \
+    #libglib2.0-dev \
 
 COPY Pipfile Pipfile.lock /
 
