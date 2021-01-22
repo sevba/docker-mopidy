@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "a26e3b80ddce3140b36592cdd743528a0368bbfb649120ea43204cb59372fea1"
+            "sha256": "742646057be0224cd34599722dd93c6bbf0506b16ab174d9d7f37388eca52f73"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -229,6 +229,14 @@
             ],
             "index": "pypi",
             "version": "==3.55.4"
+        },
+        "mopidy-local": {
+            "hashes": [
+                "sha256:92d294865fd47a9c9440ec59aaf479094b94102372dc3b0ef91c24811ad1722d",
+                "sha256:a06338b3afbb5ae8694cb4f8ccd9ffa900d8cec114b33e5e1be84d3e9646c791"
+            ],
+            "index": "pypi",
+            "version": "==3.2.0"
         },
         "mopidy-moped": {
             "hashes": [
@@ -500,6 +508,14 @@
             ],
             "markers": "python_version >= '3.5'",
             "version": "==6.1"
+        },
+        "uritools": {
+            "hashes": [
+                "sha256:405917a31ce58a57c8ccd0e4ea290f38baf2f4823819c3688f5331f1aee4ccb0",
+                "sha256:5ba20a5de979a6a65b3d55998bee86ca1d97075d0f22923b85590b5e39c2b307"
+            ],
+            "markers": "python_version ~= '3.5'",
+            "version": "==3.0.0"
         },
         "urllib3": {
             "hashes": [
