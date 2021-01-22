@@ -7,9 +7,6 @@ COPY mopidy.conf /etc/default/mopidy.conf
 RUN mkdir /etc/mopidy
 COPY mopidy.conf /etc/mopidy/mopidy.conf
 
-# Copy helper script.
-COPY entrypoint.sh /entrypoint.sh
-
 # Update package db
 RUN pacman -Sy
 
@@ -30,8 +27,8 @@ RUN sudo pacman -Syu --needed --noconfirm base-devel git \
  && cd yay \
  && makepkg -sri --needed --noconfirm \
  && cd \
- && rm -rf .cache yay
-# && sudo pacman -R base-devel git
+ && rm -rf .cache yay \
+ && sudo pacman -Scc
 
 ######################################
 ########### Mopidy setup ###########
@@ -54,7 +51,8 @@ EXPOSE 6600 6680 5555/udp
 ######################################
 ########### Snapcast setup ###########
 
-RUN yay -S --noconfirm snapcast
+RUN yay -S --noconfirm snapcast \
+ && sudo pacman -Scc
 ## Expose TCP port used to stream audio data to snapclient instances
 EXPOSE 1704
 
