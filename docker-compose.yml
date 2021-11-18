@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+  mopidy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sevba/mopidy
+    ports:
+      - '6600:6600'
+      - '6680:6680'
+      - '5555/udp' 
+    volumes:
+      - '/usr/share/hassio/mopidy:/data'
+      - '/dev:/dev'
+      - '/usr/share/hassio/share:/share'
+      - '/usr/share/hassio/audio/external:/run/audio'
+      - '/usr/share/hassio/audio/asound:/etc/asound.conf'
+      - '/usr/share/hassio/homeassistant/mopidy/mopidy.conf:/etc/mopidy/mopidy.conf'
+      - '/usr/share/hassio/homeassistant/mopidy/pulse/client.conf:/etc/pulse/client.conf'
+    networks:
+      - bridgenet
+
+networks:
+  bridgenet:
+    driver: bridge
